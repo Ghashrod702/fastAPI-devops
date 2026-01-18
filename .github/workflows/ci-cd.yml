@@ -5,7 +5,6 @@ on:
     branches:
       - master
 
-
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
@@ -38,7 +37,9 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          docker pull myfastapi:latest || true
+          cd /fastapi
+          git pull origin master
           docker stop fastapi || true
           docker rm fastapi || true
-          docker run -d --name fastapi -p 8000:8000 myfastapi:latest
+          docker build -t fastapi .
+          docker run -d --name fastapi -p 8000:8000 fastapi
